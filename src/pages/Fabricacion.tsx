@@ -9,6 +9,7 @@ import { Plus, Factory, Eye, ChevronRight, Trash2 } from 'lucide-react'
 const ETAPAS = ['INYECCION', 'FABRICACION', 'ENVASADO', 'COMPLETADO']
 const ETAPA_LABEL: Record<string, string> = { INYECCION: 'Inyección', FABRICACION: 'Fabricación', ENVASADO: 'Envasado', COMPLETADO: 'Completado' }
 const ESTADO_BADGE: Record<string, string> = { PENDIENTE: 'badge-gray', EN_PROCESO: 'badge-blue', COMPLETADA: 'badge-green', CANCELADA: 'badge-red' }
+const ESTADO_LABEL: Record<string, string> = { PENDIENTE: 'Pendiente', EN_PROCESO: 'En proceso', COMPLETADA: 'Completada', CANCELADA: 'Cancelada' }
 
 export default function Fabricacion() {
   const [items, setItems] = useState<OrdenFabricacion[]>([])
@@ -70,7 +71,7 @@ export default function Fabricacion() {
         <div className="card p-0 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800 text-left">
+              <tr className="text-left">
                 <th className="px-4 py-3 text-gray-500 font-medium">Número</th>
                 <th className="px-4 py-3 text-gray-500 font-medium">Producto</th>
                 <th className="px-4 py-3 text-gray-500 font-medium text-right">Cantidad</th>
@@ -101,7 +102,7 @@ export default function Fabricacion() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3"><span className={ESTADO_BADGE[o.estado]}>{o.estado.replace('_', ' ')}</span></td>
+                  <td className="px-4 py-3"><span className={ESTADO_BADGE[o.estado]}>{ESTADO_LABEL[o.estado]}</span></td>
                   <td className="px-4 py-3 text-gray-400">{o.fecha_inicio}</td>
                   <td className="px-4 py-3 text-right flex items-center justify-end gap-1">
                     <button className="btn-ghost p-1.5" onClick={() => verDetalle(o.id)}><Eye size={14} /></button>
@@ -156,7 +157,7 @@ export default function Fabricacion() {
                 </div>
               </div>
             ))}
-            {insumos.length === 0 && <div className="text-center py-4 text-gray-600 text-sm">Sin insumos definidos (opcional)</div>}
+            {insumos.length === 0 && <div className="text-center py-4 text-sm" style={{color:'var(--text-muted)'}}>Sin insumos definidos (opcional)</div>}
           </div>
         </div>
 
@@ -179,7 +180,7 @@ export default function Fabricacion() {
               <div><span className="text-gray-500">Producto:</span> <span className="text-gray-200">{detalle.orden.producto_codigo}</span></div>
               <div><span className="text-gray-500">Cantidad:</span> <span className="text-gray-200">{detalle.orden.cantidad}</span></div>
               <div><span className="text-gray-500">Etapa actual:</span> <span className="text-primary-400">{ETAPA_LABEL[detalle.orden.etapa]}</span></div>
-              <div><span className="text-gray-500">Estado:</span> <span className={ESTADO_BADGE[detalle.orden.estado]}>{detalle.orden.estado}</span></div>
+              <div><span className="text-gray-500">Estado:</span> <span className={ESTADO_BADGE[detalle.orden.estado]}>{ESTADO_LABEL[detalle.orden.estado]}</span></div>
               <div><span className="text-gray-500">Inicio:</span> <span className="text-gray-200">{detalle.orden.fecha_inicio}</span></div>
               {detalle.orden.fecha_fin && <div><span className="text-gray-500">Fin:</span> <span className="text-gray-200">{detalle.orden.fecha_fin}</span></div>}
             </div>

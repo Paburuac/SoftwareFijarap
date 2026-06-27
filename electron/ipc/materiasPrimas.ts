@@ -10,8 +10,8 @@ export function registrarMateriasPrimas() {
   ipcMain.handle('materias-primas:crear', (_e, d: Omit<MateriaPrima, 'id' | 'creado_en'>) => {
     const db = getDb()
     db.run(
-      'INSERT INTO materias_primas (codigo,descripcion,unidad,stock,stock_minimo,precio_referencia) VALUES (?,?,?,?,?,?)',
-      [d.codigo, d.descripcion, d.unidad, d.stock, d.stock_minimo, d.precio_referencia]
+      'INSERT INTO materias_primas (codigo,descripcion,unidad,stock,stock_minimo,precio_referencia,imagen) VALUES (?,?,?,?,?,?,?)',
+      [d.codigo, d.descripcion, d.unidad, d.stock, d.stock_minimo, d.precio_referencia, d.imagen ?? '']
     )
     const row = getOne<{ id: number }>('SELECT last_insert_rowid() as id')
     persistir()
@@ -20,8 +20,8 @@ export function registrarMateriasPrimas() {
 
   ipcMain.handle('materias-primas:actualizar', (_e, d: MateriaPrima) => {
     getDb().run(
-      'UPDATE materias_primas SET codigo=?,descripcion=?,unidad=?,stock=?,stock_minimo=?,precio_referencia=? WHERE id=?',
-      [d.codigo, d.descripcion, d.unidad, d.stock, d.stock_minimo, d.precio_referencia, d.id]
+      'UPDATE materias_primas SET codigo=?,descripcion=?,unidad=?,stock=?,stock_minimo=?,precio_referencia=?,imagen=? WHERE id=?',
+      [d.codigo, d.descripcion, d.unidad, d.stock, d.stock_minimo, d.precio_referencia, d.imagen ?? '', d.id]
     )
     persistir()
     return getOne<MateriaPrima>('SELECT * FROM materias_primas WHERE id = ?', [d.id])

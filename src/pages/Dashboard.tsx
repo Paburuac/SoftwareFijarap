@@ -98,7 +98,7 @@ export default function Dashboard() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-100">Panel Principal</h1>
+        <h1 className="text-2xl font-bold text-gray-100">Panel principal</h1>
         <p className="text-gray-500 text-sm mt-1">
           {new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
@@ -123,7 +123,7 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-8 card">
-        <h2 className="text-sm font-semibold text-gray-300 mb-1">Accesos rápidos</h2>
+        <h2 className="text-sm font-semibold text-gray-300 mb-1">Navegación</h2>
         <p className="text-xs text-gray-500">Usá el menú lateral para navegar entre módulos.</p>
       </div>
     </div>

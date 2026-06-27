@@ -4,7 +4,7 @@ import type { Cliente, TipoCliente } from '../../shared/types'
 import PageHeader from '../components/PageHeader'
 import Modal from '../components/Modal'
 import EmptyState from '../components/EmptyState'
-import { Plus, Users, Pencil, Search, Phone, Mail } from 'lucide-react'
+import { Plus, Users, Pencil, Search, Phone, Mail, Trash2 } from 'lucide-react'
 
 const TIPOS: TipoCliente[] = ['MINORISTA', 'MAYORISTA', 'DISTRIBUIDORA']
 const TIPO_BADGE: Record<TipoCliente, string> = { MINORISTA: 'badge-gray', MAYORISTA: 'badge-blue', DISTRIBUIDORA: 'badge-orange' }
@@ -39,6 +39,11 @@ export default function Clientes() {
     if (editId) await invoke('clientes:actualizar', { ...form, id: editId })
     else await invoke('clientes:crear', form)
     setModal(false); cargar()
+  }
+  const eliminar = async (c: Cliente) => {
+    if (!confirm(`¿Eliminar a "${c.razon_social}"? Esta acción no se puede deshacer.`)) return
+    await invoke('clientes:eliminar', c.id)
+    cargar()
   }
   const f = (field: keyof typeof form, value: string | number) =>
     setForm(prev => ({ ...prev, [field]: value }))
@@ -94,7 +99,10 @@ export default function Clientes() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button className="btn-ghost p-1.5" onClick={() => abrirEditar(c)}><Pencil size={14} /></button>
+                    <div className="flex gap-1 justify-end">
+                      <button className="btn-ghost p-1.5" onClick={() => abrirEditar(c)}><Pencil size={14} /></button>
+                      <button className="btn-ghost p-1.5 hover:text-red-400" onClick={() => eliminar(c)}><Trash2 size={14} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}

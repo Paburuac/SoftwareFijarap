@@ -10,8 +10,8 @@ export function registrarProductos() {
   ipcMain.handle('productos:crear', (_e, d: Omit<Producto, 'id' | 'creado_en'>) => {
     const db = getDb()
     db.run(
-      'INSERT INTO productos (codigo,descripcion,categoria,stock,stock_minimo,precio_minorista,precio_mayorista,precio_distribuidora,unidad) VALUES (?,?,?,?,?,?,?,?,?)',
-      [d.codigo, d.descripcion, d.categoria, d.stock, d.stock_minimo, d.precio_minorista, d.precio_mayorista, d.precio_distribuidora, d.unidad]
+      'INSERT INTO productos (codigo,descripcion,categoria,stock,stock_minimo,precio_minorista,precio_mayorista,precio_distribuidora,unidad,imagen) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [d.codigo, d.descripcion, d.categoria, d.stock, d.stock_minimo, d.precio_minorista, d.precio_mayorista, d.precio_distribuidora, d.unidad, d.imagen ?? '']
     )
     const row = getOne<{ id: number }>('SELECT last_insert_rowid() as id')
     persistir()
@@ -20,8 +20,8 @@ export function registrarProductos() {
 
   ipcMain.handle('productos:actualizar', (_e, d: Producto) => {
     getDb().run(
-      'UPDATE productos SET codigo=?,descripcion=?,categoria=?,stock=?,stock_minimo=?,precio_minorista=?,precio_mayorista=?,precio_distribuidora=?,unidad=? WHERE id=?',
-      [d.codigo, d.descripcion, d.categoria, d.stock, d.stock_minimo, d.precio_minorista, d.precio_mayorista, d.precio_distribuidora, d.unidad, d.id]
+      'UPDATE productos SET codigo=?,descripcion=?,categoria=?,stock=?,stock_minimo=?,precio_minorista=?,precio_mayorista=?,precio_distribuidora=?,unidad=?,imagen=? WHERE id=?',
+      [d.codigo, d.descripcion, d.categoria, d.stock, d.stock_minimo, d.precio_minorista, d.precio_mayorista, d.precio_distribuidora, d.unidad, d.imagen ?? '', d.id]
     )
     persistir()
     return getOne<Producto>('SELECT * FROM productos WHERE id = ?', [d.id])

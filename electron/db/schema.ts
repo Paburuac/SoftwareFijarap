@@ -27,6 +27,7 @@ export async function initDb(): Promise<void> {
 
   _db.run('PRAGMA foreign_keys = ON')
   crearTablas()
+  migrar()
   cargarDatosIniciales()
   persistir()
 }
@@ -274,6 +275,13 @@ function crearTablas() {
       notas            TEXT    NOT NULL DEFAULT ''
     );
   `)
+}
+
+function migrar() {
+  const db = getDb()
+  // Agrega columnas nuevas a DBs existentes sin romper nada
+  try { db.run("ALTER TABLE productos ADD COLUMN imagen TEXT NOT NULL DEFAULT ''") } catch {}
+  try { db.run("ALTER TABLE materias_primas ADD COLUMN imagen TEXT NOT NULL DEFAULT ''") } catch {}
 }
 
 function cargarDatosIniciales() {

@@ -21,6 +21,7 @@ export interface Producto {
   precio_mayorista: number
   precio_distribuidora: number
   unidad: string
+  imagen: string
   activo: number
   creado_en: string
 }
@@ -35,6 +36,7 @@ export interface MateriaPrima {
   stock: number
   stock_minimo: number
   precio_referencia: number
+  imagen: string
   activo: number
   creado_en: string
 }
