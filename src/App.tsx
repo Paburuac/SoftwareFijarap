@@ -1,7 +1,8 @@
 import { HashRouter, Routes, Route, NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Package, Layers, Truck, Users,
-  FileText, Receipt, ShoppingCart, Factory, Bell,
+  FileText, Receipt, ShoppingCart, Factory, Bell, Wallet,
+  BarChart2, ClipboardList, Settings,
 } from 'lucide-react'
 import Dashboard from './pages/Dashboard'
 import Productos from './pages/Productos'
@@ -13,6 +14,12 @@ import Facturas from './pages/Facturas'
 import OrdenesCompra from './pages/OrdenesCompra'
 import Fabricacion from './pages/Fabricacion'
 import Notificaciones from './pages/Notificaciones'
+import Caja from './pages/Caja'
+import Estadisticas from './pages/Estadisticas'
+import Reportes from './pages/Reportes'
+import Administracion from './pages/Administracion'
+import Remitos from './pages/Remitos'
+import AjustesInventario from './pages/AjustesInventario'
 
 const nav = [
   { to: '/',               icon: LayoutDashboard, label: 'Dashboard' },
@@ -22,9 +29,15 @@ const nav = [
   { to: '/clientes',       icon: Users,            label: 'Clientes' },
   { to: '/presupuestos',   icon: FileText,         label: 'Presupuestos' },
   { to: '/facturas',       icon: Receipt,          label: 'Facturas' },
+  { to: '/caja',           icon: Wallet,           label: 'Caja' },
   { to: '/compras',        icon: ShoppingCart,     label: 'Compras' },
   { to: '/fabricacion',    icon: Factory,          label: 'Fabricación' },
+  { to: '/remitos',        icon: Truck,            label: 'Remitos' },
+  { to: '/ajustes',        icon: ClipboardList,    label: 'Ajustes Stock' },
+  { to: '/estadisticas',   icon: BarChart2,        label: 'Estadísticas' },
+  { to: '/reportes',       icon: ClipboardList,    label: 'Reportes' },
   { to: '/notificaciones', icon: Bell,             label: 'Notificaciones' },
+  { to: '/administracion', icon: Settings,         label: 'Administración' },
 ]
 
 export default function App() {
@@ -73,9 +86,15 @@ export default function App() {
             <Route path="/clientes"        element={<Clientes />} />
             <Route path="/presupuestos"    element={<Presupuestos />} />
             <Route path="/facturas"        element={<Facturas />} />
+            <Route path="/caja"            element={<Caja />} />
             <Route path="/compras"         element={<OrdenesCompra />} />
             <Route path="/fabricacion"     element={<Fabricacion />} />
+            <Route path="/remitos"         element={<Remitos />} />
+            <Route path="/ajustes"         element={<AjustesInventario />} />
+            <Route path="/estadisticas"    element={<Estadisticas />} />
+            <Route path="/reportes"        element={<Reportes />} />
             <Route path="/notificaciones"  element={<Notificaciones />} />
+            <Route path="/administracion"  element={<Administracion />} />
           </Routes>
         </main>
       </div>

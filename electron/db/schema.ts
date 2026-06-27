@@ -225,6 +225,54 @@ function crearTablas() {
       clave            TEXT    PRIMARY KEY,
       valor            TEXT    NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS remitos (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      numero           TEXT    NOT NULL UNIQUE,
+      factura_id       INTEGER,
+      cliente_id       INTEGER NOT NULL REFERENCES clientes(id),
+      fecha            TEXT    NOT NULL DEFAULT (date('now')),
+      estado           TEXT    NOT NULL DEFAULT 'PENDIENTE',
+      notas            TEXT    NOT NULL DEFAULT '',
+      creado_en        TEXT    NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS remito_lineas (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      remito_id        INTEGER NOT NULL REFERENCES remitos(id),
+      producto_id      INTEGER NOT NULL REFERENCES productos(id),
+      cantidad         REAL    NOT NULL DEFAULT 1
+    );
+    CREATE TABLE IF NOT EXISTS ajustes_inventario (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo             TEXT    NOT NULL,
+      motivo           TEXT    NOT NULL,
+      fecha            TEXT    NOT NULL DEFAULT (date('now')),
+      creado_en        TEXT    NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS ajuste_inventario_lineas (
+      id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+      ajuste_id           INTEGER NOT NULL REFERENCES ajustes_inventario(id),
+      producto_id         INTEGER NOT NULL REFERENCES productos(id),
+      cantidad_anterior   REAL    NOT NULL DEFAULT 0,
+      cantidad_ajuste     REAL    NOT NULL DEFAULT 0,
+      cantidad_nueva      REAL    NOT NULL DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS caja_movimientos (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo             TEXT    NOT NULL CHECK(tipo IN ('INGRESO','EGRESO')),
+      concepto         TEXT    NOT NULL,
+      monto            REAL    NOT NULL,
+      referencia       TEXT    NOT NULL DEFAULT '',
+      fecha            TEXT    NOT NULL DEFAULT (date('now')),
+      creado_en        TEXT    NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS caja_arqueos (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      fecha            TEXT    NOT NULL DEFAULT (datetime('now')),
+      saldo_sistema    REAL    NOT NULL DEFAULT 0,
+      saldo_real       REAL    NOT NULL DEFAULT 0,
+      diferencia       REAL    NOT NULL DEFAULT 0,
+      notas            TEXT    NOT NULL DEFAULT ''
+    );
   `)
 }
 
@@ -319,6 +367,8 @@ function cargarDatosIniciales() {
 
   db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_presupuesto', '0')")
   db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_factura', '0')")
+  db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_remito', '0')")
+  db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_ajuste', '0')")
   db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_orden_compra', '0')")
   db.run("INSERT OR IGNORE INTO config VALUES ('ultimo_nro_fabricacion', '0')")
 

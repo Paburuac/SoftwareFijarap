@@ -177,6 +177,37 @@ export interface OrdenFabricacionInsumo {
   cantidad_usada: number
 }
 
+// ─── Caja ─────────────────────────────────────────────────────────────────────
+
+export type TipoMovimiento = 'INGRESO' | 'EGRESO'
+
+export interface CajaMovimiento {
+  id: number
+  tipo: TipoMovimiento
+  concepto: string
+  monto: number
+  referencia: string
+  fecha: string
+  creado_en: string
+}
+
+export interface CajaArqueo {
+  id: number
+  fecha: string
+  saldo_sistema: number
+  saldo_real: number
+  diferencia: number
+  notas: string
+}
+
+export interface CajaResumen {
+  saldo_actual: number
+  ingresos_hoy: number
+  egresos_hoy: number
+  ingresos_mes: number
+  egresos_mes: number
+}
+
 // ─── Notificación ─────────────────────────────────────────────────────────────
 
 export interface Notificacion {
@@ -185,6 +216,127 @@ export interface Notificacion {
   mensaje: string
   leida: number
   creado_en: string
+}
+
+// ─── Remito ───────────────────────────────────────────────────────────────────
+
+export type EstadoRemito = 'PENDIENTE' | 'ENTREGADO' | 'ANULADO'
+
+export interface Remito {
+  id: number
+  numero: string
+  factura_id: number | null
+  cliente_id: number
+  cliente_nombre?: string
+  fecha: string
+  estado: EstadoRemito
+  notas: string
+  creado_en: string
+}
+
+export interface RemitoLinea {
+  id: number
+  remito_id: number
+  producto_id: number
+  producto_codigo?: string
+  producto_descripcion?: string
+  cantidad: number
+}
+
+// ─── Ajuste de Inventario ─────────────────────────────────────────────────────
+
+export type TipoAjuste = 'ENTRADA' | 'SALIDA' | 'CORRECCION'
+
+export interface AjusteInventario {
+  id: number
+  tipo: TipoAjuste
+  motivo: string
+  fecha: string
+  creado_en: string
+}
+
+export interface AjusteInventarioLinea {
+  id: number
+  ajuste_id: number
+  producto_id: number
+  producto_codigo?: string
+  producto_descripcion?: string
+  cantidad_anterior: number
+  cantidad_ajuste: number
+  cantidad_nueva: number
+}
+
+// ─── Estadísticas ─────────────────────────────────────────────────────────────
+
+export interface VentaMensual {
+  mes: string
+  total: number
+  cantidad: number
+}
+
+export interface ProductoTop {
+  producto_id: number
+  codigo: string
+  descripcion: string
+  total_vendido: number
+  cantidad_vendida: number
+}
+
+export interface ClienteTop {
+  cliente_id: number
+  razon_social: string
+  total_comprado: number
+  cantidad_facturas: number
+}
+
+export interface EstadisticasGenerales {
+  ventas_anio: number
+  ventas_mes: number
+  ticket_promedio: number
+  total_clientes_activos: number
+  total_productos_activos: number
+  facturas_pagadas_mes: number
+  facturas_pendientes_mes: number
+}
+
+// ─── Reportes ─────────────────────────────────────────────────────────────────
+
+export interface ReporteStockItem {
+  id: number
+  codigo: string
+  descripcion: string
+  categoria: string
+  stock: number
+  stock_minimo: number
+  precio_minorista: number
+  precio_mayorista: number
+  precio_distribuidora: number
+}
+
+export interface ReporteDeudaCliente {
+  cliente_id: number
+  razon_social: string
+  tipo: string
+  total_deuda: number
+  facturas_pendientes: number
+}
+
+export interface ReporteMovimientoCaja {
+  fecha: string
+  ingresos: number
+  egresos: number
+  saldo_dia: number
+}
+
+// ─── Administración ───────────────────────────────────────────────────────────
+
+export interface ConfigEmpresa {
+  razon_social: string
+  cuit: string
+  direccion: string
+  telefono: string
+  email: string
+  condicion_iva: string
 }
 
 // ─── IPC Channel map ──────────────────────────────────────────────────────────
@@ -230,6 +382,35 @@ export interface IpcChannels {
   'fabricacion:obtener': [number, { orden: OrdenFabricacion; insumos: OrdenFabricacionInsumo[] }]
   'fabricacion:crear': [{ orden: Omit<OrdenFabricacion, 'id' | 'creado_en'>; insumos: Omit<OrdenFabricacionInsumo, 'id' | 'orden_fabricacion_id'>[] }, OrdenFabricacion]
   'fabricacion:avanzar-etapa': [number, OrdenFabricacion]
+  // Remitos
+  'remitos:listar': [void, Remito[]]
+  'remitos:obtener': [number, { remito: Remito; lineas: RemitoLinea[] }]
+  'remitos:crear': [{ remito: Omit<Remito, 'id' | 'creado_en'>; lineas: Omit<RemitoLinea, 'id' | 'remito_id'>[] }, Remito]
+  'remitos:actualizar-estado': [{ id: number; estado: EstadoRemito }, void]
+  // Ajustes de inventario
+  'ajustes:listar': [void, AjusteInventario[]]
+  'ajustes:obtener': [number, { ajuste: AjusteInventario; lineas: AjusteInventarioLinea[] }]
+  'ajustes:crear': [{ ajuste: Omit<AjusteInventario, 'id' | 'creado_en'>; lineas: { producto_id: number; cantidad_ajuste: number }[] }, AjusteInventario]
+  // Estadísticas
+  'estadisticas:generales': [void, EstadisticasGenerales]
+  'estadisticas:ventas-mensuales': [{ meses: number }, VentaMensual[]]
+  'estadisticas:productos-top': [{ limite: number }, ProductoTop[]]
+  'estadisticas:clientes-top': [{ limite: number }, ClienteTop[]]
+  // Reportes
+  'reportes:stock': [void, ReporteStockItem[]]
+  'reportes:deuda-clientes': [void, ReporteDeudaCliente[]]
+  'reportes:caja-periodo': [{ desde: string; hasta: string }, ReporteMovimientoCaja[]]
+  'reportes:ventas-periodo': [{ desde: string; hasta: string }, { facturas: Factura[]; total: number }]
+  // Administración
+  'admin:config-empresa': [void, ConfigEmpresa]
+  'admin:guardar-config-empresa': [ConfigEmpresa, void]
+  // Caja
+  'caja:resumen': [void, CajaResumen]
+  'caja:movimientos': [{ desde?: string; hasta?: string }, CajaMovimiento[]]
+  'caja:registrar': [Omit<CajaMovimiento, 'id' | 'creado_en'>, CajaMovimiento]
+  'caja:eliminar': [number, void]
+  'caja:arqueos': [void, CajaArqueo[]]
+  'caja:arquear': [{ saldo_real: number; notas: string }, CajaArqueo]
   // Notificaciones
   'notificaciones:listar': [void, Notificacion[]]
   'notificaciones:marcar-leida': [number, void]

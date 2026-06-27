@@ -10,6 +10,12 @@ import { registrarFacturas } from './ipc/facturas'
 import { registrarOrdenesCompra } from './ipc/ordenesCompra'
 import { registrarFabricacion } from './ipc/fabricacion'
 import { registrarDashboard } from './ipc/dashboard'
+import { registrarCaja } from './ipc/caja'
+import { registrarEstadisticas } from './ipc/estadisticas'
+import { registrarReportes } from './ipc/reportes'
+import { registrarAdmin } from './ipc/admin'
+import { registrarRemitos } from './ipc/remitos'
+import { registrarAjustes } from './ipc/ajustes'
 
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
 
@@ -47,6 +53,12 @@ app.whenReady().then(async () => {
   registrarOrdenesCompra()
   registrarFabricacion()
   registrarDashboard()
+  registrarCaja()
+  registrarEstadisticas()
+  registrarReportes()
+  registrarAdmin()
+  registrarRemitos()
+  registrarAjustes()
 
   createWindow()
 
